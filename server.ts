@@ -5,6 +5,7 @@ const app = Express();
 
 const tranpiler = new Bun.Transpiler({
     loader: "ts",
+    allowBunRuntime: true,
 });
 app.get("/script.js", async (req, res) => {
     const tscode = fs.readFileSync(`${__dirname}/index.ts`, "utf-8");

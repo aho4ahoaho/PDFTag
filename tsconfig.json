@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "lib": [
-      "ESNext",
-    ],
+            "ESNext",
+        ],
         "module": "ES2020",
         "target": "ES6",
         "moduleResolution": "bundler",
@@ -18,7 +18,8 @@
         "forceConsistentCasingInFileNames": true,
         "allowJs": true,
         "types": [
-            "bun-types" // add Bun global,
+            "bun-types", // add Bun global,
+            "pdfjs-dist",
         ]
     }
 }
