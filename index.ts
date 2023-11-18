@@ -1,14 +1,14 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-//型定義だけローカルから貰ってくる
-import type * as pdfjsLibType from "pdfjs-dist";
 // @ts-expect-error pdfjsLib
 import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@4/build/pdf.min.mjs";
+//型定義だけローカルから貰ってくる
+import type * as pdfjsLibType from "pdfjs-dist";
 //型にする
-type pdfjsLibType = typeof pdfjsLibType;
 // anyでimportしたpdfjsLibに型をつける
-declare const pdfjsLib: pdfjsLibType;
+//biome-ignore lint/suspicious/noRedeclare: pdfjsLibの型定義を上書きする
+declare const pdfjsLib: typeof pdfjsLibType;
 // workerのパスを指定
 //@ts-expect-error workerを手動でimport
 await import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4/build/pdf.worker.min.mjs");
@@ -33,7 +33,7 @@ class PDFViewer extends HTMLElement {
     }
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-        const safeNumber = (value: any, fallbackNum: number) => {
+        const safeNumber = (value: string, fallbackNum: number) => {
             const num = Number(value);
             if (Number.isNaN(num)) return fallbackNum;
             return num;
@@ -58,8 +58,10 @@ class PDFViewer extends HTMLElement {
         const viewport = page.getViewport({ scale: this.scale });
         this.canvas.height = viewport.height;
         this.canvas.width = viewport.width;
+        const canvasContext = this.canvas.getContext("2d");
+        if (canvasContext == null) throw new Error("canvasContext is null");
         page.render({
-            canvasContext: this.canvas.getContext("2d")!,
+            canvasContext,
             viewport,
         });
     }
